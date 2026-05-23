@@ -1,0 +1,25 @@
+name: Daily Beauty Content
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 3 AM UTC = 8:30 AM IST
+  workflow_dispatch:  # Manual trigger button
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Add timestamp
+        run: |
+          echo "<!-- Updated: $(date) -->" >> index.html
+      
+      - name: Commit changes
+        run: |
+          git config user.name "GlowCompass Bot"
+          git config user.email "bot@glowcompass.com"
+          git add index.html
+          git commit -m "✨ Daily update $(date +%Y-%m-%d)" || echo "No changes"
+          git push
